@@ -3,6 +3,7 @@ import express, { Application, NextFunction, Request, Response } from 'express';
 import { UsersRoutes } from './routes/users.routes';
 import multer from 'multer';
 import { upload } from './config/multer';
+import { SchedulesRoutes } from './routes/schedules.routes';
 //tipando a constant App
 const app: Application = express();
 // converter tudo para json
@@ -11,8 +12,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const usersRoutes = new UsersRoutes().getRoutes();
+const schedulesRoutes = new SchedulesRoutes().getRoutes();
 
 app.use('/users', usersRoutes);
+app.use('/schedules', schedulesRoutes);
 
 //antes de subir o servidor tem uma tratativa de erros
 app.use((err: Error, request: Request, response: Response, next: NextFunction) => {
