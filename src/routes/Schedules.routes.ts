@@ -17,19 +17,25 @@ class SchedulesRoutes {
             '/',
             this.authMiddleware.auth.bind(this.authMiddleware),// dados para autenticacao com token
             this.schedulesController.store.bind(this.schedulesController),
-            );
+        );
         //listar todos
         this.router.get(
             '/',
             this.authMiddleware.auth.bind(this.authMiddleware),// dados para autenticacao com token
             this.schedulesController.index.bind(this.schedulesController),
-            );
+        );
         //editar
         this.router.put(
             '/:id',
             this.authMiddleware.auth.bind(this.authMiddleware),// dados para autenticacao com token
             this.schedulesController.update.bind(this.schedulesController),
-            );
+        );
+        //delete
+        this.router.delete(
+            '/:id',
+            this.authMiddleware.auth.bind(this.authMiddleware),// dados para autenticacao com token
+            this.schedulesController.delete.bind(this.schedulesController),
+        );
         return this.router;
     }
 

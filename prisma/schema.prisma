@@ -12,16 +12,19 @@ datasource db {
 
 // definindo os modulos do banco de dados
 model Users {
-  id         String @id @default(uuid())
-  email      String @unique
+  id         String     @id @default(uuid())
+  email      String     @unique
   password   String
   name       String
-  avatar_url String @default("")
+  avatar_url String     @default("")
+  Schedule   Schedule[]
 }
 
 model Schedule {
-  id    String   @id @default(uuid())
-  name  String
-  phone String
-  date  DateTime
+  id      String   @id @default(uuid())
+  name    String
+  phone   String
+  date    DateTime
+  user_id String  @default("")
+  users   Users?    @relation(fields: [user_id], references: [id]) //vinculação de chave extrangeira
 }

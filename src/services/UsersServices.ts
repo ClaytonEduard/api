@@ -3,7 +3,7 @@ import { ICreate, IUpdate } from "../Interfaces/UsersInterfaces";
 import { UsersRepository } from "../repositories/UsersRepository"
 import { s3 } from "../config/aws";
 import { v4 as uuid } from 'uuid';
-import { sign } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 
 class UsersServices {
     private usersRepository: UsersRepository
@@ -90,15 +90,52 @@ class UsersServices {
             subject: findUser?.id,
             expiresIn: 60 * 15, // tempo de expiracao do token de 15 min
         });
+        // refresh token 
+        const refreshToken = sign({ email }, secretKey, {
+            subject: findUser?.id,
+            expiresIn: '7d', // tempo de expiracao do token de 7 dias
+        });
 
         return {
             token,
+            refresh_token: refreshToken,
             user: {
                 name: findUser.name,
                 email: findUser.email,
             }
         }
     }
+
+    // metodo de refresh token para quem esta logado
+
+    async refresh(refresh_token: string) {
+        if (!refresh_token) {
+            throw new Error('Refresh token missing')
+        }
+        let secretKeyRefresh: string | undefined =
+            process.env.ACCESS_KEY_TOKEN_REFRESH;
+        if (!secretKeyRefresh) {
+            throw new Error('There is no refresh token key');
+        }
+        //criar uma chave secreta
+        let secretKey: string | undefined = process.env.ACCESS_KEY_TOKEN;
+        if (!secretKey) {
+            throw new Error('There is no refresh token key')
+        }
+
+        const verifyRefreshToken = verify(refresh_token, secretKeyRefresh)
+        const { sub } = verifyRefreshToken;
+
+        // retorna o novo token
+        const newToken = sign({ sub }, secretKey, {
+            expiresIn: 60 * 15,
+        })
+        const refreshToken = sign({ sub }, secretKeyRefresh, {
+            expiresIn: '7d',
+        });
+        return { token: newToken, refresh_token: refreshToken };
+    }
+
 
 }
 export { UsersServices }

@@ -7,10 +7,12 @@ class SchedulesController {
     constructor() {
         this.schedulesService = new SchedulesService();
     }
+    //create
     async store(request: Request, response: Response, next: NextFunction) {
         const { name, phone, date } = request.body;
+        const { user_id } = request;
         try {
-            const result = await this.schedulesService.create({ name, phone, date });
+            const result = await this.schedulesService.create({ name, phone, date, user_id });
 
             return response.status(201).json(result);
         } catch (error) {
@@ -36,15 +38,24 @@ class SchedulesController {
         // buscar o id para atualizar
         const { id } = request.params;
         const { date } = request.body;
+        const { user_id } = request;
         try {
-            const result = await this.schedulesService.update(id, date);
+            const result = await this.schedulesService.update(id, date, user_id);
 
             return response.json(result);
         } catch (error) {
             next(error)
         }
     }
-    delete(request: Request, response: Response, next: NextFunction) { }
+    async delete(request: Request, response: Response, next: NextFunction) {
+        const { id } = request.params;
+        try {
+            const result = await this.schedulesService.delete(id);
+            return response.json(result);
+        } catch (error) {
+            next(error);
+        }
+    }
 
 }
 export { SchedulesController }
