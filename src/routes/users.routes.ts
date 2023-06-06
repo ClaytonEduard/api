@@ -27,7 +27,7 @@ class UsersRoutes {
         this.router.post('/auth', this.usersController.auth.bind(this.usersController),);
 
         // rota de refresh token
-        this.router.post('/refresh', this.usersController.refresh.bind(this.usersController))
+        this.router.post('/refresh', this.usersController.refresh.bind(this.usersController),)
         return this.router;
 
     }

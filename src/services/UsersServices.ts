@@ -102,6 +102,7 @@ class UsersServices {
             user: {
                 name: findUser.name,
                 email: findUser.email,
+                avatar_url: findUser.avatar_url,
             }
         }
     }
