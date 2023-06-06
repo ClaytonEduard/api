@@ -76,7 +76,7 @@ class UsersServices {
             throw new Error('User or password invalid.');
         }
         // compara a senha cadastrada utilizando o Bcript
-        const passwordMatch = compare(password, findUser.password);
+        const passwordMatch =  await compare(password, findUser.password);
         if (!passwordMatch) {
             throw new Error('User or password invalid.');
         }
@@ -86,6 +86,12 @@ class UsersServices {
         if (!secretKey) {
             throw new Error('There is no token key')
         }
+        let secretKeyRefreshToken: string | undefined =
+            process.env.ACCESS_KEY_TOKEN_REFRESH;
+        if (!secretKeyRefreshToken) {
+           throw new Error('There is no token key');
+        }
+
         const token = sign({ email }, secretKey, {
             subject: findUser?.id,
             expiresIn: 60 * 15, // tempo de expiracao do token de 15 min
